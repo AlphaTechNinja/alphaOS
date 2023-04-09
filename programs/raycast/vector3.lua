@@ -11,7 +11,6 @@ if get(t,k) then
 return t[k]
 elseif k == "mag" then
 return math.sqrt(get(t,"x")^2 + get(t,"y")^2 + get(t,"z")^2)
-
 else
 error("try to get index "..k.." which does not exist",1)
 end
@@ -118,16 +117,19 @@ end
 function vector3.distance(a,b)
 return (a - b):abs().mag
 end
-function vector3.unit(a)
+function vector3.normal(a)
 local total = a.x + a.y + a.z
 return vector3.new(a.x / total,a.y / total,a.z / total)
 end
 local function angle(a,b)
 return math.atan(a/b)
 end
+--[[
+This is the same as a.normal()
 function vector3.angles(a)
 return vector3.new(angle(a.x,a.y),angle(a.y,a.z),angle(a.z,a.x))
 end
+--]]
 function vector3.todeg(a)
 return vector3.new(math.deg(a.x),math.deg(a.y),math.deg(a.z))
 end

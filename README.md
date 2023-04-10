@@ -18,3 +18,5 @@ maybe "thread.lua"
 "window.lua"
 
 the link to the mod repo is https://github.com/MightyPirates/OpenComputers
+
+Here's the wiki that I made for this (mostly likely not working) https://github.com/AlphaTechNinja/alphaOS.wiki.git

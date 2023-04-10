@@ -1,14 +1,14 @@
 do
-_G.bootfile = "lib/core/boot.lua"
-_G.rootfilesystem = component.list("filesystem")()
-function load_file(file)
-local file = component.provoke(_G.rootfilesystem,"open",file,"r")
-local buffer = ""
-local line = ""
-until line == nil
-line = component.provoke(_G.rootfilesystem,"read",file,math.huge)
-buffer = buffer.." "..line
-repeat
-load(buffer,=init)
-init()
+local addr, invoke = computer.getBootAddress(), component.invoke
+  local function loadfile(file)
+    local handle = assert(invoke(addr, "open", file))
+    local buffer = ""
+    repeat
+      local data = invoke(addr, "read", handle, math.huge)
+      buffer = buffer .. (data or "")
+    until not data
+    invoke(addr, "close", handle)
+    return load(buffer, "=" .. file, "bt", _G)
+  end
+  loadfile("/lib/core/boot.lua")(loadfile)
 end

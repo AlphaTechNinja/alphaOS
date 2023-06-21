@@ -29,7 +29,7 @@ for path in package.path:gmatch("[^;]+") do
 table.insert(paths,path:gsub("?",name:gsub(".","/")))
 end
 for i,v in ipairs(paths) do
-if component.invoke(component.filesystem,"exits",v) then
+if component.filesystem.exists(v) then
 package.loaded[getName(name)] = dofile(v)
 return package.loaded[getName(name)]
 end

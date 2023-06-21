@@ -23,7 +23,7 @@ end
 return table.remove(segments)
 end
 function package.require(name)
-if package.loaded[getName(name)] then return package.loaded[getName(name)] end
+if package.loaded[getName(name:gsub(".","/"))] then return package.loaded[getName(name:gsub(".","/"))] end
 local paths = {}
 for path in package.path:gmatch("[^;]+") do
 table.insert(paths,path:gsub("?",name:gsub(".","/")))

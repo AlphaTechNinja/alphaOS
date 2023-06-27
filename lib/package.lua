@@ -20,7 +20,7 @@ local segments = {}
 for seg in path:gmatch("[^/]+") do
 segments[#segments + 1] = seg
 end
-return table.remove(segments):gsub("%.(%w)","")
+return table.remove(segments):gsub("%.(%w+)","")
 end
 function package.require(name)
 if package.loaded[getName(name:gsub(".","/"))] then return package.loaded[getName(name:gsub(".","/"))] end

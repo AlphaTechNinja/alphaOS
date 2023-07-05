@@ -1,39 +1,61 @@
---handles doing require
-local package = {}
+if _G.package then return _G.package end
+package = {}
 package.loaded = {}
-package.loaded["_G"] = _G
-package.loaded["string"] = string
-package.loaded["bit32"] = bit32
-package.loaded["coroutine"] = coroutine
-package.loaded["debug"] = debug
-package.loaded["math"] = math
-package.loaded["os"] = os
-package.loaded["component"] = component
-package.loaded["computer"] = computer
-package.loaded["unicode"] = unicode
-package.loaded["table"] = table
-package.loaded["package"] = package
-package.path = "/?.lua;/lib/?.lua;/lib/core/?.lua"
---main
+package.loaded._G = _G
+for n,v in pairs(_G) do
+if type(v) == "table" then
+package.loaded[n] = v
+end
+end
+package.loaded.package = package
+package.path = "/?.lua;/lib/?.lua;/bin/?.lua;/?.mod;/lib/?.mod"
+--internal calls
+local function segments(path)
+local tab = {}
+for segment in path:gmatch("[^/]+") do
+table.insert(tab,segment)
+end
+return tab
+end
 local function getName(path)
-local segments = {}
-for seg in path:gmatch("[^/]+") do
-segments[#segments + 1] = seg
+local segs = segments(path)
+return segs[#segs]:gsub("%.(%w)","")
 end
-return table.remove(segments)
+local function getDict(path)
+local segs = segments(path)
+table.remove(segs)
+return table.concat(segs,"/")
 end
-function package.require(name)
-if package.loaded[getName(name)] then return package.loaded[getName(name)] end
-local paths = {}
-for path in package.path:gmatch("[^;]+") do
-table.insert(paths,path:gsub("?",name:gsub(".","/")))
+--main
+function package.require(path)
+local name = getName(path)
+path = path:gsub("%.","/")
+if package.loaded[name] then return package.loaded[name] end
+if path == package.loading then
+error("detected a recursive require",2)
 end
-for i,v in ipairs(paths) do
-if component.invoke(component.filesystem,"exits",v) then
-package.loaded[getName(name)] = dofile(v)
-return package.loaded[getName(name)]
+package.loading = path
+--look for a valid path
+local errors = {}
+local valid = "" 
+for tpath in package.path:gmatch("[^;]+") do
+if fs.exists(tpath:gsub("?",path)) then
+valid = tpath:gsub("?",path)
+break
+else
+table.insert(errors,("File not found in %s"):format(tpath:gsub("?",path)))
 end
 end
-error(("couldn't find %s in "..table.concat(paths," or ")):format(name:gsub(".","/")))
+if valid == "" then return nil,"\n"..table.concat(errors,"\n") end
+package.loaded[name] = dofile(valid)
+package.loading = nil
+return package.loaded[name]
+end
+--simple path api
+function package.addCheck(path)
+package.path = package.path..path
+end
+function package.setPath(path)
+package.path = path
 end
 return package

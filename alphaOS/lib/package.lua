@@ -58,4 +58,4 @@ end
 function package.setPath(path)
 package.path = path
 end
-return package
+return setmetatable(package,{metadata = "package",sysFlag = true})

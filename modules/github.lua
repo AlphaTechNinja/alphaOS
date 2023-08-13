@@ -65,6 +65,15 @@ for i,v in ipairs(github.getFiles(user,repo,branch)) do
 print(repo.."/"..v.."->"..fs.combine(dest,v))
 end
 end
+function github.listBranches(user,repo)
+local request = http.get(("https://api.github.com/repos/%s/%s/branches"):format(user,repo)).readAll()
+local data = textutils.unserializeJSON(request)
+local names = {}
+for i,v in ipairs(data) do
+table.insert(names,v.name)
+end
+return names
+end
 --test
 --github.copyRepo("wip/","AlphaTechNinja","wip-Coding","main")
 return github

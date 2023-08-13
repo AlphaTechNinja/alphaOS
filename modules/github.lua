@@ -8,24 +8,6 @@ error("file does not exist")
 end
 return http.get(fixed).readAll()
 end
---for installing purposes
-function github.makeInstaller(user,repo,branch,to)
-local installer = {}
-installer.user = user
-installer.repo = repo
-installer.branch = branch
-installer.to = to
-function installer:get(path)
-return github.getFile(self.user,self.repo,self.branch,path)
-end
-function installer:download(path)
-local data = self:get(path)
-local file = fs.open(self.to.."/"..path,"w")
-file.write(data)
-file.close()
-end
-return installer
-end
 function github.sort(objects)
 local folders = {}
 local files = {}

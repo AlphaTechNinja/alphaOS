@@ -1,3 +1,0 @@
---the terminal object WARNING THIS IS A CORE FILE
-local term = {}
-local graphics = require("graphics")

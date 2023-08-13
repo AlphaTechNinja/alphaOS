@@ -30,12 +30,14 @@ local lines = {str}
 if wrap then
 lines = graphics.wordWrap(str,w,x)
 end
+local feeds = 0
 for i,v in ipairs(lines) do
 if i == 1 then
 gpu.set(x,y,v)
 else
-gpu.set(1,y + i - 1,v)
+gpu.set(1,y + i - 1 + feeds,v)
 end
 end
+return #lines,lines[#lines]:len()
 end
 return graphics
